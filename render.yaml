@@ -48,7 +48,7 @@ services:
       - fromGroup: mainnet-settings
   # stacks-blockchain-api instance (read only instance)
   - name: mainnet-stacks-blockchain-api-read-only
-    type: pserv
+    type: web
     env: docker
     region: oregon
     plan: Standard Plus
