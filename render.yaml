@@ -5,7 +5,7 @@ services:
     env: docker
     region: oregon
     plan: Standard Plus
-    branch: mainnet
+    branch: mainnet-read-write
     dockerfilePath: stacks-blockchain-api.Dockerfile
     dockerContext: .
     autoDeploy: false
@@ -52,7 +52,7 @@ services:
     env: docker
     region: oregon
     plan: Standard Plus
-    branch: mainnet
+    branch: mainnet-read-write
     dockerfilePath: stacks-blockchain-api.Dockerfile
     dockerContext: .
     autoDeploy: false
@@ -100,7 +100,7 @@ services:
     env: docker
     region: oregon
     plan: Standard Plus
-    branch: mainnet
+    branch: mainnet-read-write
     dockerfilePath: stacks-blockchain.Dockerfile
     dockerContext: .
     autoDeploy: false
