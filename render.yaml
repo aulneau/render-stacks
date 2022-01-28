@@ -1,142 +1,24 @@
 services:
-  # stacks-blockchain-api instance (write only instance)
-  - name: mainnet-stacks-blockchain-api-writer
-    type: pserv
-    env: docker
-    region: oregon
-    plan: Standard Plus
-    branch: mainnet-read-write
-    dockerfilePath: stacks-blockchain-api.Dockerfile
-    dockerContext: .
-    autoDeploy: false
-    envVars:
-      - key: STACKS_API_MODE
-        value: writeonly
-      - key: PG_HOST
-        fromDatabase:
-          name: mainnet-postgres
-          property: host
-      - key: PG_PORT
-        fromDatabase:
-          name: mainnet-postgres
-          property: port
-      - key: PG_DATABASE
-        fromDatabase:
-          name: mainnet-postgres
-          property: database
-      - key: PG_USER
-        fromDatabase:
-          name: mainnet-postgres
-          property: user
-      - key: PG_PASSWORD
-        fromDatabase:
-          name: mainnet-postgres
-          property: password
-      - key: STACKS_CORE_EVENT_HOST
-        value: 0.0.0.0
-      - key: STACKS_BLOCKCHAIN_API_HOST
-        value: 0.0.0.0
-      - key: STACKS_BLOCKCHAIN_API_DB
-        value: pg
-      - key: STACKS_CORE_RPC_HOST
-        fromService:
-          name: mainnet-stacks-blockchain
-          type: pserv
-          property: host
-      - key: STACKS_CORE_RPC_PORT
-        value: 80
-      - fromGroup: mainnet-settings
-  # stacks-blockchain-api instance (read only instance)
-  - name: mainnet-stacks-blockchain-api-read-only
+  - name: mainnet_e_reader
     type: web
     env: docker
     region: oregon
-    plan: Standard Plus
+    plan: Pro
     branch: mainnet-read-write
     dockerfilePath: stacks-blockchain-api.Dockerfile
     dockerContext: .
     autoDeploy: false
     envVars:
-      - key: STACKS_API_MODE
-        value: readonly
-      - key: PG_HOST
-        fromDatabase:
-          name: mainnet-postgres
-          property: host
-      - key: PG_PORT
-        fromDatabase:
-          name: mainnet-postgres
-          property: port
-      - key: PG_DATABASE
-        fromDatabase:
-          name: mainnet-postgres
-          property: database
-      - key: PG_USER
-        fromDatabase:
-          name: mainnet-postgres
-          property: user
-      - key: PG_PASSWORD
-        fromDatabase:
-          name: mainnet-postgres
-          property: password
-      - key: STACKS_CORE_EVENT_HOST
-        value: 0.0.0.0
-      - key: STACKS_BLOCKCHAIN_API_HOST
-        value: 0.0.0.0
-      - key: STACKS_BLOCKCHAIN_API_DB
-        value: pg
-      - key: STACKS_CORE_RPC_HOST
-        fromService:
-          name: mainnet-stacks-blockchain
-          type: pserv
-          property: host
-      - key: STACKS_CORE_RPC_PORT
-        value: 80
-      - fromGroup: mainnet-settings
-
-  # stacks-blockchain instance
-  - name: mainnet-stacks-blockchain
-    type: pserv
+      - fromGroup: mainnet_d_reader_config
+  - name: mainnet_f_reader
+    type: web
     env: docker
     region: oregon
-    plan: Standard Plus
+    plan: Pro
     branch: mainnet-read-write
-    dockerfilePath: stacks-blockchain.Dockerfile
+    dockerfilePath: stacks-blockchain-api.Dockerfile
     dockerContext: .
     autoDeploy: false
     envVars:
-      - key: STACKS_BLOCKCHAIN_API_HOST
-        fromService:
-          name: mainnet-stacks-blockchain-api-writer
-          type: pserv
-          property: host
-      - fromGroup: mainnet-settings
-    disk:
-      name: mainnet-stacks-blockchain
-      mountPath: /root/stacks-blockchain/data
-      sizeGB: 50
+      - fromGroup: mainnet_d_reader_config
 
-# Managed Postgres instance
-databases:
-  - name: mainnet-postgres
-    plan: Standard Plus
-
-envVarGroups:
-  - name: mainnet-settings
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: GIT_TAG
-        value: master
-      - key: STACKS_CHAIN_ID
-        value: 0x00000001
-      - key: V2_POX_MIN_AMOUNT_USTX
-        value: 90000000260
-      - key: STACKS_NETWORK
-        value: mainnet
-      - key: STACKS_EXPORT_EVENTS_FILE
-        value: /root/stacks-blockchain/stacks-node-events.tsv
-      - key: STACKS_CORE_EVENT_PORT
-        value: 3700
-      - key: STACKS_BLOCKCHAIN_API_PORT
-        value: 3999
